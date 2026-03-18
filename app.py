@@ -32,3 +32,18 @@ if __name__ == '__main__':
     import os
     port = int(os.environ.get("PORT", 10000))
     app.run(host='0.0.0.0', port=port)
+import pdfplumber
+
+def search_pdf(query):
+    results = []
+    query = query.lower()
+
+    for file in os.listdir("pdfs"):
+        if file.endswith(".pdf"):
+            with pdfplumber.open(os.path.join("pdfs", file)) as pdf:
+                for page in pdf.pages:
+                    text = page.extract_text()
+                    if text and query in text.lower():
+                        results.append(f"Found in {file}")
+
+    return results
