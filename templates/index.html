@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voter Search</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<h1>🔍 2002 Voter Search (Parbhani)</h1>
+
+<form method="POST">
+    <input type="text" name="name" placeholder="Enter Name (English)">
+    <button type="submit">Search</button>
+</form>
+
+<div class="results">
+{% for r in results %}
+    <div class="card">
+        <p><b>File:</b> {{ r.file }}</p>
+        <p><b>Line:</b> {{ r.line }}</p>
+        <p>{{ r.text }}</p>
+    </div>
+{% endfor %}
+</div>
+
+</body>
+</html>
