@@ -1,1 +1,3 @@
-pip install flask indic-transliteration rapidfuzz
+flask
+indic-transliteration
+rapidfuzz
