@@ -1,3 +1,4 @@
 flask
 indic-transliteration
 rapidfuzz
+pdfplumber
