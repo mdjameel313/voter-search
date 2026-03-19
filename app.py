@@ -6,6 +6,11 @@ app = Flask(__name__)
 DATA_FOLDER = "texts"
 
 def search_name(query):
+    def search_all(query):
+    results = []
+    results += search_name(query)
+    results += search_pdf(query)
+    return results
     results = []
     query = query.lower()
 
@@ -23,7 +28,7 @@ def home():
     results = []
     if request.method == "POST":
         name = request.form.get("name")
-        results = search_name(name)
+        results = search_all(name)
 
     return render_template("index.html", results=results)
 
