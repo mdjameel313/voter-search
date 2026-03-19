@@ -55,10 +55,23 @@ import pdfplumber
 
 def search_pdf(query):
     results = []
-    query = query.lower()
+    marathi_query = transliterate(query, sanscript.ITRANS, sanscript.DEVANAGARI)
 
-    def smart_match(query, text):
-    return fuzz.partial_ratio(query.lower(), text.lower()) > 70
+    for file in os.listdir("pdfs"):
+        if file.endswith(".pdf"):
+            with pdfplumber.open(os.path.join("pdfs", file)) as pdf:
+                for page in pdf.pages:
+                    text = page.extract_text()
+                    if text:
+                        lines = text.split("\n")   # 👈 IMPORTANT
+
+                        for line in lines:
+                            if (fuzz.partial_ratio(query.lower(), line.lower()) > 60 or
+                                fuzz.partial_ratio(marathi_query.lower(), line.lower()) > 60):
+                                
+                                results.append(line.strip())
+
+    return results
 
 
 def search_name(query):
