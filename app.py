@@ -20,6 +20,7 @@ def search_name(query):
 
     # English → Marathi convert
     marathi_query = transliterate(query, sanscript.ITRANS, sanscript.DEVANAGARI)
+    Add ElasticSearch + AI search functionality
 
     # folder check (important)
     if not os.path.exists(DATA_FOLDER):
