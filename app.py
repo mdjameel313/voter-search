@@ -1,3 +1,6 @@
+from indic_transliteration import sanscript
+from indic_transliteration.sanscript import transliterate
+from rapidfuzz import fuzz
 from flask import Flask, render_template, request
 import os
 
@@ -5,11 +8,22 @@ app = Flask(__name__)
 
 DATA_FOLDER = "texts"
 
+def smart_match(query, text):
+    return fuzz.partial_ratio(query.lower(), text.lower()) > 70
+
+
 def search_name(query):
-    def search_all(query):
     results = []
-    results += search_name(query)
-    results += search_pdf(query)
+
+    # English → Marathi convert
+    marathi_query = transliterate(query, sanscript.ITRANS, sanscript.DEVANAGARI)
+
+    for file in os.listdir(DATA_FOLDER):
+        with open(os.path.join(DATA_FOLDER, file), encoding="utf-8") as f:
+            for line in f:
+                if smart_match(query, line) or smart_match(marathi_query, line):
+                    results.append(line.strip())
+
     return results
     results = []
     query = query.lower()
@@ -43,12 +57,20 @@ def search_pdf(query):
     results = []
     query = query.lower()
 
-    for file in os.listdir("pdfs"):
-        if file.endswith(".pdf"):
-            with pdfplumber.open(os.path.join("pdfs", file)) as pdf:
-                for page in pdf.pages:
-                    text = page.extract_text()
-                    if text and query in text.lower():
-                        results.append(f"Found in {file}")
+    def smart_match(query, text):
+    return fuzz.partial_ratio(query.lower(), text.lower()) > 70
+
+
+def search_name(query):
+    results = []
+
+    # English → Marathi convert
+    marathi_query = transliterate(query, sanscript.ITRANS, sanscript.DEVANAGARI)
+
+    for file in os.listdir(DATA_FOLDER):
+        with open(os.path.join(DATA_FOLDER, file), encoding="utf-8") as f:
+            for line in f:
+                if smart_match(query, line) or smart_match(marathi_query, line):
+                    results.append(line.strip())
 
     return results
