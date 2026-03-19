@@ -35,17 +35,24 @@ def search_pdf(query):
     results = []
     marathi_query = transliterate(query, sanscript.ITRANS, sanscript.DEVANAGARI)
 
+    if not os.path.exists(PDF_FOLDER):
+        return results
+
     for file in os.listdir(PDF_FOLDER):
         if file.endswith(".pdf"):
-            with pdfplumber.open(os.path.join(PDF_FOLDER, file)) as pdf:
-                for page in pdf.pages:
-                    text = page.extract_text()
-                    if text:
+            try:
+                with pdfplumber.open(os.path.join(PDF_FOLDER, file)) as pdf:
+                    for page in pdf.pages:
+                        text = page.extract_text() or ""
+
                         lines = text.split("\n")
 
                         for line in lines:
                             if smart_match(query, line) or smart_match(marathi_query, line):
                                 results.append(f"{file}: {line.strip()}")
+
+            except Exception as e:
+                print(f"Skipping bad PDF: {file}")
 
     return results
 
